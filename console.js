@@ -41,8 +41,8 @@ function getStringBetween(string, firstS, lastS)
 {
 	return string.substring(string.lastIndexOf(firstS)+1,string.lastIndexOf(lastS));
 }
-function search(keyword, page = 1)
-{//https://www.youtube.com/results?sp=EgIQAw%253D%253D&search_query=animation+movies&page=1
+function search(keyword)
+{
 	var key_encode = encodeURI(keyword);
 	var pll_param = '&sp=EgIQAw%253D%253D';
 	var page_param = '&page=' + page;
@@ -169,6 +169,7 @@ function autoCreate()
 	var page = '';
 	var tmp = [];
 	var plid = '';
+	var doneList = [];
 	for(var i = 0; i < plls.length; i++)
 	{
 		tmp = getPlaylistInfo(plls[i]);
@@ -181,10 +182,12 @@ function autoCreate()
 			moveVideoOnTop(plid);
 			setDescription(plid, tmp['des']);
 			console.log('Done: https://www.youtube.com/playlist?list=' + plid);
+			doneList.push(plid);
 		} catch(e) {}
 		
 		//break;
 	}
+	document.body.innerHTML += '<textarea cols="50" rows="10">'+doneList.join("r\n")+'</textarea>';
 	console.log('Done !!!');
 	return;
 }
