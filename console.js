@@ -14,13 +14,11 @@ var api_key = 'AIzaSyAsD0yc-a0-Jaaj2YySRMVXmfOwXj9wmAQ';
 var i_video = 0;
 var current_video_id = '';
 total_pll -= 1;
-//.replace(/ /g,'')
 if(keyword == '')
 {
    alert('Keyword trống !');
 } else {
 	search(keyword, page_times);
-	//addVideoToPlaylist('123');
 }
 
 RegExp.prototype.execAll = function(string) {
@@ -74,8 +72,7 @@ function filterAllPlaylist(page_string)
 		}
 		
 	}
-	//console.log(plls.length); 
-	if(total_times >= 4 || (plls.length >= total_pll)) {
+	if(plls.length >= total_pll) {
 		console.log('Total playlist has been got: ' + plls.length);
 		var url = 'https://www.youtube.com/playlist?list=' + plls[0];
 		var xhttp = new XMLHttpRequest();
@@ -100,7 +97,7 @@ function filterAllPlaylist(page_string)
 
 function getPlaylistInfo(id)
 {
-	//https://www.googleapis.com/youtube/v3/playlists?key=AIzaSyAsD0yc-a0-Jaaj2YySRMVXmfOwXj9wmAQ&id=PLZnmJWnTfXn4DdfN3bUzUT0SmYhqkzSqX&part=id,snippet
+	
 	//get data
 	var url = 'https://www.googleapis.com/youtube/v3/playlists?key=' + api_key + '&id=' + id + '&part=id,snippet';
 	var xhttp = new XMLHttpRequest();
@@ -137,7 +134,6 @@ function sendRq(postVar)
 
 function sendPostRq(url, postVar)
 {
-	//var url = 'https://www.youtube.com/playlist_ajax?action_create_playlist=1';
 	var xhttp = new XMLHttpRequest();
 	xhttp.onreadystatechange = function() {
 		
@@ -218,7 +214,6 @@ function moveVideoOnTop(plid)
 	url = 'https://www.youtube.com/playlist_edit_service_ajax/?action_move_video_before=1';
 	postVar = 'playlist_id='+plid+'&set_video_id='+last_video+'&moved_set_video_id_successor='+first_video+'&session_token='+security_token;
 	str = sendPostRq(url, postVar);
-	//console.log(str);
 }
 function setDescription(plid, desc)
 {
