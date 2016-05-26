@@ -41,7 +41,7 @@ function getStringBetween(string, firstS, lastS)
 {
 	return string.substring(string.lastIndexOf(firstS)+1,string.lastIndexOf(lastS));
 }
-function search(keyword)
+function search(keyword, page)
 {
 	var key_encode = encodeURI(keyword);
 	var pll_param = '&sp=EgIQAw%253D%253D';
