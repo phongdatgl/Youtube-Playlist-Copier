@@ -48,7 +48,6 @@ function search(keyword, page)
 	var xhttp = new XMLHttpRequest();
 	  xhttp.onreadystatechange = function() {
 	    if (xhttp.readyState == 4 && xhttp.status == 200) {
-	    		security_token = 
 				filterAllPlaylist(xhttp.responseText);
 			total_times += 1;
 		}
