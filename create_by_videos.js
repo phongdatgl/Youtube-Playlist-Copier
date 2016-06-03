@@ -92,7 +92,9 @@ function createPlaylists()
 	total_pll = document.getElementById('inputTotalpll').value;
 	total_videos = document.getElementById('inputVideos').value;
 	total_video_from = document.getElementById('inputTotalV1').value;
+	total_video_from = parseInt(total_video_from);
 	total_video_to = document.getElementById('inputTotalV2').value;
+	total_video_to = parseInt(total_video_to);
 	playlist_title = document.getElementById('playlist_title').value;
 	playlist_desc = document.getElementById('playlist_desc').value;
 	total_videos = total_videos.replace(/ /g,'');
@@ -239,15 +241,30 @@ function tSleep(milliseconds) {
 		}
 	}
 }
+function randomArr(from_num, to_num)
+{
+	randomNum = Math.floor(Math.random() * (to_num - from_num + 1)) + from_num;
+	newArr = [];
+	for(i = 0; i < randomNum; i++)
+	{
+		try {
+			newArr.push(videos[i]);
+		} catch(e) {}
+	}
+	return newArr;
+}
 function createPlaylist()
 {
 	document.getElementById('result_area').innerHTML = '<h2 class="text-center">Playlist Done</h2><textarea id="result_area_id" class="form-control" rows="10"></textarea>';
 	postVar = '';
 	url = 'https://www.youtube.com/playlist_ajax?action_create_playlist=1';
 	for(var i = 1; i <= total_pll; i++) {
-		new_arr = shuffle(videos);
+		new_arr = randomArr(total_video_from, total_video_to);
+		new_arr = shuffle(new_arr);
 		new_arr = new_arr.join(',');
-		new_arr = all_videos[0] + ',' + new_arr;
+		if(i_video >= all_videos.length) i_video = 0;
+		new_arr = all_videos[i_video] + ',' + new_arr;
+		i_video += 1;
 		postVar = 'video_ids='+new_arr+'&source_playlist_id=&n='+encodeURI(playlist_title)+'&p=public&session_token='+security_token;
 		res = sendPostRq(url, postVar);
 		try {
