@@ -182,7 +182,7 @@ function autoCreate()
 		
 		//break;
 	}
-	document.body.innerHTML += '<textarea cols="50" rows="10">'+doneList.join("r\n")+'</textarea>';
+	document.body.innerHTML += '<textarea cols="50" rows="10">'+doneList.join("\r\n")+'</textarea>';
 	console.log('Done !!!');
 	return;
 }
