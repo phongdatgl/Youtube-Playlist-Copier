@@ -173,8 +173,10 @@ function autoCreate()
 		try {
 			pJson = JSON.parse(page);
 			plid = pJson['result']['playlistId'];
-			addVideoToPlaylist(plid);
-			moveVideoOnTop(plid);
+			if(total_videos.length > 0) {
+				addVideoToPlaylist(plid);
+				moveVideoOnTop(plid);
+			}
 			setDescription(plid, tmp['des']);
 			console.log('Done: https://www.youtube.com/playlist?list=' + plid);
 			doneList.push(plid);

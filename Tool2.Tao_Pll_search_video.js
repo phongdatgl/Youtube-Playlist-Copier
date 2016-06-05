@@ -263,7 +263,9 @@ function createPlaylist()
 		new_arr = shuffle(new_arr);
 		new_arr = new_arr.join(',');
 		if(i_video >= all_videos.length) i_video = 0;
-		new_arr = all_videos[i_video] + ',' + new_arr;
+		if(all_videos.length > 0) {
+			new_arr = all_videos[i_video] + ',' + new_arr;
+		}
 		i_video += 1;
 		postVar = 'video_ids='+new_arr+'&source_playlist_id=&n='+encodeURI(playlist_title)+'&p=public&session_token='+security_token;
 		res = sendPostRq(url, postVar);
