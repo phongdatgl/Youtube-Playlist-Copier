@@ -153,7 +153,7 @@ function shuffle(array) {
 function filterAllVideos(page_string)
 {
 	var content_string = '';
-	content_string = getStringBetween(page_string, 'class="item-section">','class="yt-uix-pager');
+	content_string = getStringBetween(page_string, 'class="item-section">','class="branded-page-box');
 	var regex = /data-context-item-id="([A-Za-z0-9-_]{10,12})"/g;
 	match = regex.execAll(content_string);
 	for(var i = 0; i < match.length; i++)

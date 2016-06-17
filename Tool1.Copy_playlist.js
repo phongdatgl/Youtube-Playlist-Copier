@@ -59,7 +59,7 @@ function search(keyword, page)
 function filterAllPlaylist(page_string)
 {
 	var content_string = '';
-	content_string = getStringBetween(page_string, 'class="item-section">','class="yt-uix-pager');
+	content_string = getStringBetween(page_string, 'class="item-section">','class="branded-page-box');
 	var regex = /&amp;list=([A-Za-z0-9-_]{30,40})/g;
 	match = regex.execAll(content_string);
 	for(var i = 0; i < match.length; i++)
