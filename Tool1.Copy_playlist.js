@@ -233,17 +233,11 @@ function moveVideoOnTop(plid)
 			u1 = 'https://www.youtube.com/browse_ajax?action_continuation=1' + tmp_str;
 			page_str = sendGetRq(u1);
 			solan += 1;
-			//console.log(page_str.indexOf("/browse_ajax?action_continuation=1"));
 		} while(page_str.indexOf("/browse_ajax?action_continuation=1") >= 0);
 	}
 	//var regex = /data-set-video-id=[\\]?\"([A-F0-9]{15,20})/g;
 	match = regex.execAll(page_str);
-	if(solan == 1 || solan == 0) {
-		last_video = match[match.length-1][1];
-	} else {console.log('co 1');
-		//last_video = match[0][1];
-		last_video = match[match.length-1][1];
-	}
+	last_video = match[match.length-1][1];
 	//first_video = match[0][1];
 	
 	url = 'https://www.youtube.com/playlist_edit_service_ajax/?action_move_video_before=1';
