@@ -38,7 +38,11 @@ RegExp.prototype.execAll = function(string) {
 }
 function getStringBetween(string, firstS, lastS)
 {
-	return string.substring(string.lastIndexOf(firstS)+1,string.lastIndexOf(lastS));
+	str1 = string.split(firstS);
+	if(str1.length < 1) return '';
+	str2 = str1[1].split(lastS);
+	if(str2.length < 1) return '';
+	return str2[0];
 }
 function search(keyword, page)
 {
@@ -211,11 +215,37 @@ function moveVideoOnTop(plid)
 {
 	url = 'https://www.youtube.com/playlist?list=' + plid;
 	page_str = sendGetRq(url);
-	//data-set-video-id="
-	var regex = /data-set-video-id=\"([A-F0-9]{15,20})/g;
+	var regex = /data-set-video-id=[\\]?\"([A-F0-9]{15,20})/g;
 	match = regex.execAll(page_str);
 	first_video = match[0][1];
-	last_video = match[match.length-1][1];
+	//data-set-video-id="
+	solan = 0;
+	if (page_str.indexOf("/browse_ajax?action_continuation=1") >= 0)
+	{
+		do {
+			
+			tmp_str = getStringBetween(page_str, '/browse_ajax?action_continuation=1', '"');
+			tmp_str = tmp_str.replace('\\u0026amp;', '&');
+			tmp_str = tmp_str.replace('u0026amp;', '&');
+			tmp_str = tmp_str.replace('&amp;', '&');
+			tmp_str = tmp_str.replace('\\', '');
+			tmp_str = tmp_str.replace(/\\/g, '');
+			u1 = 'https://www.youtube.com/browse_ajax?action_continuation=1' + tmp_str;
+			page_str = sendGetRq(u1);
+			solan += 1;
+			//console.log(page_str.indexOf("/browse_ajax?action_continuation=1"));
+		} while(page_str.indexOf("/browse_ajax?action_continuation=1") >= 0);
+	}
+	//var regex = /data-set-video-id=[\\]?\"([A-F0-9]{15,20})/g;
+	match = regex.execAll(page_str);
+	if(solan == 1 || solan == 0) {
+		last_video = match[match.length-1][1];
+	} else {console.log('co 1');
+		//last_video = match[0][1];
+		last_video = match[match.length-1][1];
+	}
+	//first_video = match[0][1];
+	
 	url = 'https://www.youtube.com/playlist_edit_service_ajax/?action_move_video_before=1';
 	postVar = 'playlist_id='+plid+'&set_video_id='+last_video+'&moved_set_video_id_successor='+first_video+'&session_token='+security_token;
 	str = sendPostRq(url, postVar);
