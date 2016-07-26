@@ -14,6 +14,7 @@ var api_key = 'AIzaSyAsD0yc-a0-Jaaj2YySRMVXmfOwXj9wmAQ';
 var i_video = 0;
 var current_video_id = '';
 total_pll -= 1;
+var last_length = 0;
 if(keyword == '')
 {
    alert('Keyword trống !');
@@ -71,7 +72,8 @@ function filterAllPlaylist(page_string)
 		}
 		
 	}
-	if(plls.length >= total_pll) {
+	//console.log(plls.length);
+	if(plls.length >= total_pll || plls.length == last_length) {
 		console.log('Total playlist has been got: ' + plls.length);
 		var url = 'https://www.youtube.com/playlist?list=' + plls[0];
 		var xhttp = new XMLHttpRequest();
@@ -89,6 +91,7 @@ function filterAllPlaylist(page_string)
 	} else {
 		//console.log(plls.length);
 		page_times += 1;
+		last_length = plls.length;
 		search(keyword, page_times);
 	}
 	
@@ -165,8 +168,9 @@ function autoCreate()
 	var tmp = [];
 	var plid = '';
 	var doneList = [];
-	for(var i = 0; i < plls.length; i++)
+	for(var j = 0; j < total_pll; j++)
 	{
+		i = Math.floor((Math.random() * plls.length) + 1);
 		tmp = getPlaylistInfo(plls[i]);
 		var postVar = 'video_ids&source_playlist_id='+plls[i]+'&n='+encodeURI(tmp["title"])+'&p=public&session_token='+security_token;
 		page = sendRq(postVar);
