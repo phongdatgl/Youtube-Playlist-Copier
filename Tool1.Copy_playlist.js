@@ -1,10 +1,43 @@
-var keyword = prompt('Nhập vào keyword thím ơi:');
-var total_pll = prompt('Nhập vào tổng pll muốn tạo: ');
-var total_videos = prompt('Nhập vào ID video muốn chèn, cách nhau bằng dấu , : ');
+var str = '';
+str += '<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">';
+str += '<div class="container"><div class="row"><div class="col-sm-8 col-sm-offset-2">';
+str += '<h1 class="text-center">Tạo playlist Copy</h1><form action="" method="POST" class="form-horizontal" role="form">'+
+	'<div class="form-group">'+
+		'<label for="inputKeyw" class="col-sm-4 control-label">Danh sách Từ khóa:</label>'+
+		'<div class="col-sm-8">'+
+			'<input type="text" name="keyw" id="inputKeyw" class="form-control" value="" required="required" title="">'+
+		'</div>'+
+	'</div>'+
+	'<div class="form-group">'+
+		'<label for="inputTotalpll" class="col-sm-4 control-label">Số lượng Pll:</label>'+
+		'<div class="col-sm-8">'+
+			'<input type="number" name="total_pll" id="inputTotalpll" class="form-control" value="10" required="required" title="">'+
+		'</div>'+
+	'</div>'+
+	'<div class="form-group">'+
+		'<label for="inputVideos" class="col-sm-4 control-label">ID video của bạn:</label>'+
+		'<div class="col-sm-8">'+
+			'<input type="text" name="idvideos" id="inputVideos" class="form-control" value="" required="required" placeholder="ID video, cách nhau bằng dấu phẩy">'+
+		'</div>'+
+	'</div>'+
+	'<div class="form-group">'+
+		'<div class="col-sm-8 col-sm-offset-4">'+
+			'<button type="button" id="create_now" onclick="createPlaylists()" class="btn btn-primary">Tạo ngay và luôn</button>'+
+		'</div>'+
+	'</div>'+
+'</form>'+
+'</div></div>'+
+'<div class="row"><div class="col-sm-8 col-sm-offset-2" id="result_text"></div></div>'+
+'<div class="row"><div class="col-sm-8 col-sm-offset-2" id="result_area"></div></div>'+
+'</div>'
+;
+
+
+var keyword = '';
+var total_pll = 0;
+var total_videos = '';
 //var total_videos = 'AVVbZzMhJHU';
-total_videos = total_videos.replace(/ /g,'');
 var all_videos = [];
-all_videos = total_videos.split(',');
 //var total_pll = 2;
 var plls = [];
 var total_times = 0;
@@ -15,12 +48,27 @@ var i_video = 0;
 var current_video_id = '';
 total_pll -= 1;
 var last_length = 0;
-if(keyword == '')
+var keywords = [];
+var ikws = 0;
+var per_keyword = 0;
+var plls_per_key = 0;
+
+function createPlaylists()
 {
-   alert('Keyword trống !');
-} else {
-	search(keyword, page_times);
+	keyword = document.getElementById('inputKeyw').value;
+	keywords = keyword.split(',');
+	total_pll = document.getElementById('inputTotalpll').value;
+	total_videos = document.getElementById('inputVideos').value;
+	total_videos = total_videos.replace(/ /g,'');
+	all_videos = total_videos.split(',');
+	document.getElementById("create_now").classList.add("disabled");
+	document.getElementById("create_now").innerHTML = "Đang tạo ...";
+	per_keyword = total_pll / keywords.length;
+
+	//document.getElementById("create_now").setAttribute("class", "disabled");
+	search(keywords[ikws], page_times);
 }
+
 
 RegExp.prototype.execAll = function(string) {
 	var matches = [];
@@ -44,9 +92,9 @@ function getStringBetween(string, firstS, lastS)
 	if(str2.length < 1) return '';
 	return str2[0];
 }
-function search(keyword, page)
+function search(kw, page)
 {
-	var key_encode = encodeURI(keyword);
+	var key_encode = encodeURI(kw);
 	var pll_param = '&sp=EgIQAw%253D%253D';
 	var page_param = '&page=' + page;
 	var url = 'https://www.youtube.com/results?search_query='+key_encode+pll_param+page_param;
@@ -64,6 +112,7 @@ function search(keyword, page)
 function filterAllPlaylist(page_string)
 {
 	var content_string = '';
+	
 	content_string = getStringBetween(page_string, 'class="item-section">','class="branded-page-box');
 	var regex = /&amp;list=([A-Za-z0-9-_]{30,40})/g;
 	match = regex.execAll(content_string);
@@ -73,11 +122,13 @@ function filterAllPlaylist(page_string)
 		if(plls.indexOf(match[i][1]) == -1)
 		{
 			plls.push(match[i][1]);
+			plls_per_key += 1;
 		}
 		
 	}
 	//console.log(plls.length);
-	if(plls.length >= total_pll || plls.length == last_length) {
+
+	if(plls.length >= total_pll || (plls.length == last_length && ikws >= keywords.length ) ) {
 		console.log('Total playlist has been got: ' + plls.length);
 		var url = 'https://www.youtube.com/playlist?list=' + plls[0];
 		var xhttp = new XMLHttpRequest();
@@ -93,10 +144,16 @@ function filterAllPlaylist(page_string)
 		xhttp.send();
 		
 	} else {
-		//console.log(plls.length);
+		if(plls.length == last_length || plls_per_key >= per_keyword)
+		{
+			ikws += 1;
+			page_times = 0;
+			plls_per_key = 0;
+		}
+		document.getElementById('result_text').innerHTML = "<p class='text-success'>Getting: "+plls.length+" playlist</p>";
 		page_times += 1;
 		last_length = plls.length;
-		search(keyword, page_times);
+		search(keywords[ikws], page_times);
 	}
 	
 }
@@ -187,12 +244,15 @@ function autoCreate()
 			}
 			setDescription(plid, tmp['des']);
 			console.log('Done: https://www.youtube.com/playlist?list=' + plid);
-			doneList.push(plid);
+			document.getElementById('result_text').innerHTML = "<p class='text-success'>Done: https://www.youtube.com/playlist?list="+plid+"</p>";
+			document.getElementById('result_area_id').value += plid + "\r\n";
 		} catch(e) {}
 		
 		//break;
 	}
-	document.body.innerHTML += '<textarea cols="50" rows="10">'+doneList.join("\r\n")+'</textarea>';
+	document.getElementById("create_now").classList.remove("disabled");
+	document.getElementById("create_now").innerHTML = "Đã xong !";
+	window.setTimeout(function() {document.getElementById("create_now").innerHTML = "Tạo ngay và luôn";}, 2000);
 	console.log('Done !!!');
 	return;
 }
@@ -250,3 +310,4 @@ function setDescription(plid, desc)
 	postVar = 'playlist_id='+plid+'&playlist_description='+encodeURI(desc)+'&session_token='+security_token;
 	str = sendPostRq(url, postVar);
 }
+document.body.innerHTML = str;
